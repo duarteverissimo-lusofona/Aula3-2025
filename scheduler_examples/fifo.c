@@ -20,25 +20,33 @@
  *                 to point to the next task to run.
  */
 void fifo_scheduler(uint32_t current_time_ms, queue_t *rq, pcb_t **cpu_task) {
+    // Verifica se já existe uma tarefa a correr no CPU
     if (*cpu_task) {
-        (*cpu_task)->ellapsed_time_ms += TICKS_MS;      // Add to the running time of the application/task
+        // Atualiza o tempo já gasto pela tarefa atual
+        (*cpu_task)->ellapsed_time_ms += TICKS_MS;
+
+        // Verifica se a tarefa já completou o seu tempo total de execução
         if ((*cpu_task)->ellapsed_time_ms >= (*cpu_task)->time_ms) {
-            // Task finished
-            // Send msg to application
+            // Criar mensagem a informar que o processo terminou
             msg_t msg = {
                 .pid = (*cpu_task)->pid,
                 .request = PROCESS_REQUEST_DONE,
                 .time_ms = current_time_ms
             };
+
+            // Enviar a mensagem para a aplicação associada
             if (write((*cpu_task)->sockfd, &msg, sizeof(msg_t)) != sizeof(msg_t)) {
                 perror("write");
             }
-            // Application finished and can be removed (this is FIFO after all)
+
+            // Libertar a memória do processo terminado
             free((*cpu_task));
-            (*cpu_task) = NULL;
+            (*cpu_task) = NULL;  // Marcar CPU como livre
         }
     }
-    if (*cpu_task == NULL) {            // If CPU is idle
-        *cpu_task = dequeue_pcb(rq);   // Get next task from ready queue (dequeue from head)
+
+    // Se o CPU está livre, atribuir a próxima tarefa da fila
+    if (*cpu_task == NULL) {
+        *cpu_task = dequeue_pcb(rq);   // Retira o primeiro da fila (FIFO)
     }
 }

@@ -1,6 +1,6 @@
 # Aula 3 / Sistemas Operativos – 2025  
-**Repositório:** Aula3-2025  
-**Instituição:** ULHT  - Universidade Lusófona
+**Repositório:** Aula3 -2025  
+**Instituição:** ULHT - Universidade Lusófona
 
 
 ---

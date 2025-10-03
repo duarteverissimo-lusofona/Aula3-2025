@@ -80,5 +80,12 @@ pcb_t* dequeue_pcb(queue_t* q);
  */
 queue_elem_t *remove_queue_elem(queue_t* q, queue_elem_t* elem);
 
+/**
+ * Procura na fila de prontos pelo processo com o menor tempo de execução total (time_ms),
+ * remove-o da fila e retorna um ponteiro para o seu PCB.
+ * Esta função é o coração do escalonador SJF.
+ * Retorna NULL se a fila estiver vazia.
+ */
+pcb_t* remove_shortest_pcb(queue_t *rq);
 
 #endif //QUEUE_H

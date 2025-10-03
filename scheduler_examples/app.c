@@ -15,6 +15,7 @@
  * Run like: ./app <name> <time_s>
  */
 int main(int argc, char *argv[]) {
+
     if (argc != 3) {
         printf("Usage: %s <name> <time_s>\n", argv[0]);
         exit(EXIT_FAILURE);
