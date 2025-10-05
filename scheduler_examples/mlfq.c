@@ -102,8 +102,6 @@ void mlfq_scheduler(uint32_t current_time_ms, queue_t *rq, pcb_t **cpu_task) {
         }
         // CASO 2: Usou TODO o quantum (CPU-bound)
         else if (time_in_slice >= quantum) {
-            // NÃO enviar DONE aqui: o processo não terminou, apenas foi preemptado.
-            // Se existir, poderias enviar PROCESS_REQUEST_PREEMPTED/PROCESS_REQUEST_YIELD.
 
             // DESCE DE PRIORIDADE (penaliza processos CPU-bound)
             int new_priority = current_priority + 1;
@@ -116,9 +114,7 @@ void mlfq_scheduler(uint32_t current_time_ms, queue_t *rq, pcb_t **cpu_task) {
             enqueue_pcb(rq, *cpu_task);
             *cpu_task = NULL;
         }
-        // CASO 3: Terminou/bloqueou ANTES do quantum (I/O-bound)
-        // Neste caso, mantém a prioridade atual (não desce)
-        // O processo será tratado quando voltar de I/O na função check_blocked_queue
+
     }
 
     // ===== PARTE 2: Priority Boost (anti-starvation) =====
@@ -139,11 +135,6 @@ void mlfq_scheduler(uint32_t current_time_ms, queue_t *rq, pcb_t **cpu_task) {
             // Marcar início do novo time slice
             (*cpu_task)->slice_start_ms = current_time_ms;
             
-            // Se o processo estava bloqueado por I/O e voltou
-            // (status seria TASK_BLOCKED se tivéssemos essa info)
-            // INCREMENTA prioridade (recompensa I/O-bound)
-            // Nota: isto seria feito quando o processo volta de blocked_queue
-            // Por agora, processos que não consumiram o quantum mantêm prioridade
         }
     }
 }
