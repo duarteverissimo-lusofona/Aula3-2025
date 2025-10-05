@@ -14,8 +14,11 @@
 
 #include "fifo.h"
 #include "sjf.h"
+#include "rr.h"
 #include "msg.h"
 #include "queue.h"
+#include "mlfq.h"
+
 
 static uint32_t PID = 0;
 
@@ -233,20 +236,18 @@ void check_blocked_queue(queue_t * blocked_queue, queue_t * command_queue, uint3
 
 static const char *SCHEDULER_NAMES[] = {
     "FIFO",
-
     "SJF",
-    /*
     "RR",
     "MLFQ",
-*/
+
     NULL
 };
 
 typedef enum  {
     NULL_SCHEDULER = -1,
     SCHED_FIFO = 0,
-    SCHED_SJF = 1 ,
-    SCHED_RR,
+    SCHED_SJF,
+    SCHED_RR ,
     SCHED_MLFQ
 } scheduler_en;
 
@@ -314,8 +315,14 @@ int main(int argc, char *argv[]) {
             case SCHED_SJF:
                 sjf_scheduler(current_time_ms, &ready_queue, &CPU);
             break;
+            case SCHED_RR:
+                rr_scheduler(current_time_ms, &ready_queue, &CPU);
 
+            case SCHED_MLFQ:
+                mlfq_scheduler(current_time_ms, &ready_queue, &CPU);
+            break;
             default:
+        
                 printf("Unknown scheduler type\n");
                 break;
         }

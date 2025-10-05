@@ -13,6 +13,7 @@ pcb_t *new_pcb(pid_t pid, uint32_t sockfd, uint32_t time_ms) {
     new_task->sockfd = sockfd;           // Socket de comunicação com a app
     new_task->time_ms = time_ms;         // Tempo total de execução pedido
     new_task->ellapsed_time_ms = 0;      // Tempo já executado
+    new_task->priority = 0;              // Prioridade inicial (0=alta, 1=média, 2=baixa)
     return new_task;
 }
 
